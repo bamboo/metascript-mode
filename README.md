@@ -1,4 +1,4 @@
-## Metascript Mode
+## Metascript Mode [![Build Status](https://travis-ci.org/bamboo/metascript-mode.png?branch=master)](https://travis-ci.org/bamboo/metascript-mode)
 
 A [Metascript](https://github.com/metascript/metascript) language mode for Emacs.
 
