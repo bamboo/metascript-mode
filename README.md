@@ -38,6 +38,8 @@ M-x package-install-file /path/to/metascript-mode.el
 
 ## Configuration
 
-M-x customize-group metascript-mode
+```
+M-x customize-group metascript
+```
 
  Have fun!
