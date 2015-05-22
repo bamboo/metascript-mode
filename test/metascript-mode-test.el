@@ -18,7 +18,7 @@
             (kill-buffer ,symbol)))))
 
 
-(defun metascript-accept-repl-output (repl)
+(defun metascript-mode-test/accept-repl-output (repl)
   (accept-process-output (get-buffer-process repl) 1))
 
 
@@ -30,7 +30,7 @@
      (unwind-protect
          (progn
            (set-process-query-on-exit-flag repl-process nil)
-           (metascript-accept-repl-output ,symbol)
+           (metascript-mode-test/accept-repl-output ,symbol)
            ,@body)
        (progn
 	 (when (process-live-p repl-process)
@@ -49,26 +49,31 @@
        (should (equal metascript-sexp (metascript-region-string)))))))
 
 
-(defun test-metascript-repl-eval-after (setup)
+(defun metascript-mode-test/first-line-of (buffer)
+  (with-current-buffer buffer
+    (goto-char (point-min))
+    (end-of-line)
+    (buffer-substring-no-properties (point-min) (point))))
+
+
+(defun metascript-mode-test/test-repl-eval-after (setup)
   (with-sandbox
    (let-temp-metascript-repl repl
     (with-metascript-buffer
       (insert "var a = 2 * 21")
       (funcall setup)
       (metascript-repl-eval repl)
-      (metascript-accept-repl-output repl)
-      (with-current-buffer repl
-	(let ((expected "mjs> 42\n"))
-	  (should (equal expected (buffer-substring-no-properties (point-min) (+ (point-min) (length expected)))))))))))
+      (metascript-mode-test/accept-repl-output repl)
+      (should (equal "mjs> 42" (metascript-mode-test/first-line-of repl)))))))
 
 
 (ert-deftest metascript-mode-test/repl-eval-sends-active-region-to-repl ()
-  (test-metascript-repl-eval-after
+  (metascript-mode-test/test-repl-eval-after
    (lambda () (set-mark 9))))
 
 
 (ert-deftest metascript-mode-test/repl-eval-sends-enclosing-sexp-when-region-is-not-active ()
   "not implemented"
   :expected-result :failed
-  (test-metascript-repl-eval-after
+  (metascript-mode-test/test-repl-eval-after
    (lambda () (goto-char (point-max)))))
