@@ -25,18 +25,17 @@
 (defmacro let-temp-metascript-repl (symbol &rest body)
   "Create a temporary buffer, assign it to symbol, evaluate BODY like `progn', and then kill the buffer."
   (declare (indent 1) (debug t))
-  `(let ((,symbol (metascript-repl-make-comint)))
+  `(let* ((,symbol (metascript-repl-make-comint))
+	  (repl-process (get-buffer-process ,symbol)))
      (unwind-protect
          (progn
-           (set-process-query-on-exit-flag (get-buffer-process ,symbol) nil)
+           (set-process-query-on-exit-flag repl-process nil)
            (metascript-accept-repl-output ,symbol)
            ,@body)
        (progn
+	 (when (process-live-p repl-process)
+	   (quit-process repl-process))
          (and (buffer-name ,symbol)
-              (with-current-buffer ,symbol
-		(comint-send-eof)
-		(comint-kill-subjob)
-                t)
               (kill-buffer ,symbol))))))
 
 
@@ -59,7 +58,8 @@
       (metascript-repl-eval repl)
       (metascript-accept-repl-output repl)
       (with-current-buffer repl
-        (should (equal "mjs> 42\n" (buffer-substring-no-properties (point-min) (point-max)))))))))
+	(let ((expected "mjs> 42\n"))
+	  (should (equal expected (buffer-substring-no-properties (point-min) (+ (point-min) (length expected)))))))))))
 
 
 (ert-deftest metascript-mode-test/repl-eval-sends-active-region-to-repl ()
