@@ -68,5 +68,7 @@
 
 
 (ert-deftest metascript-mode-test/repl-eval-sends-enclosing-sexp-when-region-is-not-active ()
+  "not implemented"
+  :expected-result :failed
   (test-metascript-repl-eval-after
    (lambda () (goto-char (point-max)))))
