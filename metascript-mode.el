@@ -66,7 +66,7 @@
   :group 'metascript)
 
 (defmacro defmjsface (name base description)
-  "Defines a metascript-mode font-lock face."
+  "Defines a metascript-mode font-lock face named `NAME', inheriting from `BASE' described as `DESCRIPTION'."
   `(progn
      (defface ,name
        '((t (:inherit ,base)))
@@ -335,6 +335,7 @@ lines nested beneath it."
 
                                         ;flymake integration
 (defun flymake-metascript-init ()
+  "Setup temporary buffer to run `mjs check' on."
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
                      'flymake-create-temp-inplace))
          (local-file (file-relative-name
@@ -360,6 +361,7 @@ lines nested beneath it."
   :group 'metascript)
 
 (defun metascript-assoc-in (alist keys)
+  "Return the value in a nested `ALIST' structure, where `KEYS' is a sequence of keys or nil if value cannot be found."
   (when alist
     (let ((key (car keys))
           (keys (cdr keys)))
@@ -369,6 +371,7 @@ lines nested beneath it."
           value)))))
 
 (defun metascript-package-json-dev-dependency (name package-json)
+  "Return the value of devDependencies / `NAME' from the nested alist `PACKAGE-JSON'."
   (metascript-assoc-in package-json `(devDependencies ,name)))
 
 (defun metascript-check-available? ()
@@ -502,6 +505,7 @@ lines nested beneath it."
                             string))
 
 (defun metascript-region-string ()
+  "Return active region substring."
   (buffer-substring (region-beginning) (region-end)))
 
 
