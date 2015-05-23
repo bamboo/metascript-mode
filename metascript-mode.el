@@ -459,6 +459,7 @@ lines nested beneath it."
   :type 'number
   :group 'metascript)
 
+;;;###autoload
 (defun metascript-repl ()
   (interactive)
   (pop-to-buffer (metascript-repl-make-comint))
