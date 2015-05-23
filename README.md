@@ -14,19 +14,20 @@ A [Metascript](https://github.com/metascript/metascript) language mode for Emacs
 
 ## Keyboard shortcuts
 
-* <kbd>M-x metascript-repl</kbd>: Launch a repl.
+* <kbd>M-x metascript-repl</kbd>: Launch or activate the REPL.
 
-### metascript buffer
+### Metascript buffer
 
-Keyboard shortcut                    | Description
--------------------------------------|-------------------------------
-<kbd>C-M-f</kbd> | Move to the next block.
-<kbd>C-M-b</kbd> | Move to the previous block.
-<kbd>C-M-Space</kbd> | Mark the next block.
-<kbd>C-M-x</kbd> | Evaluate active region. Definitions become available in the repl.
-<kbd>C-c,</kbd>  | Run the tests.
+Keyboard shortcut              | Description
+-------------------------------|-------------------------------
+<kbd>C-M-f</kbd>               | Move to the next block.
+<kbd>C-M-b</kbd>               | Move to the previous block.
+<kbd>C-M-Space</kbd>           | Mark the next block.
+<kbd>C-c,</kbd>                | Run the tests.
+<kbd>C-c M-j</kbd>             | Launch or activate the REPL.
+<kbd>C-M-x</kbd>               | Evaluate active region. Definitions become available in the REPL.
 
-### metascript test buffer
+### Test results buffer
 
 Usual [compilation-minor-mode](https://www.gnu.org/software/emacs/manual/html_node/emacs/Compilation-Mode.html) shortcuts.
 

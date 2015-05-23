@@ -310,6 +310,7 @@ lines nested beneath it."
     (define-key map "\C-\M-x" 'metascript-repl-eval)
     (define-key map "\C-c," 'metascript-run-tests)
     (define-key map (kbd "C-M-SPC") 'metascript-mark-sexp)
+    (define-key map "\C-c\M-j" 'metascript-repl)
     map))
 
 ;;;###autoload
