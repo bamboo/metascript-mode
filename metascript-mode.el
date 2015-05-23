@@ -304,7 +304,6 @@ lines nested beneath it."
 (add-to-list 'compilation-error-regexp-alist 'metascript-stack-trace-with-function-name)
 
 
-
 (defvar metascript-mode-map
   (let ((map (make-sparse-keymap "Metascript")))
     (define-key map (kbd "RET") 'newline-and-indent)
@@ -325,22 +324,20 @@ lines nested beneath it."
   (setq-local font-lock-defaults '(metascript-font-lock-keywords))
   (setq-local indent-line-function 'metascript-indent-line))
 
-(add-hook 'metascript-mode-hook
-          (lambda ()
-            (when (setq indent-tabs-mode metascript-indent-tabs-mode)
-              (setq tab-width metascript-indent-offset))))
+(defun metascript-setup-buffer-locals ()
+  "Setup buffer local variables for `metascript-mode'."
+  (when (setq indent-tabs-mode metascript-indent-tabs-mode)
+    (setq tab-width metascript-indent-offset)))
+
+(add-hook 'metascript-mode-hook #'metascript-setup-buffer-locals)
 
 (add-hook 'metascript-mode-hook 'rainbow-delimiters-mode)
 
-
-                                        ;flymake integration
+;; flymake integration
 (defun flymake-metascript-init ()
   "Setup temporary buffer to run `mjs check' on."
-  (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
-         (local-file (file-relative-name
-                      temp-file
-                      (file-name-directory buffer-file-name))))
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
+         (local-file (file-relative-name temp-file (file-name-directory buffer-file-name))))
     (list "mjs" (list "check" local-file))))
 
 (setq flymake-allowed-file-name-masks
@@ -374,15 +371,18 @@ lines nested beneath it."
   "Return the value of devDependencies / `NAME' from the nested alist `PACKAGE-JSON'."
   (metascript-assoc-in package-json `(devDependencies ,name)))
 
-(defun metascript-check-available? ()
+(defun metascript-check-available-p ()
   (let ((package-json (metascript-buffer-package-json)))
     (when package-json
       (metascript-package-json-dev-dependency 'metascript-check package-json))))
 
-(add-hook 'metascript-mode-hook
-          (lambda ()
-            (when (and metascript-implies-flymake (metascript-check-available?))
-              (flymake-mode))))
+(defun metascript-flymake-setup ()
+  "Setup `flymake-mode' on the current buffer if the `metascript-check' dependency is available."
+  (and metascript-implies-flymake
+       (metascript-check-available-p)
+       (flymake-mode)))
+
+(add-hook 'metascript-mode-hook #'metascript-flymake-setup)
 
 ; pretty symbol display
 
@@ -399,59 +399,60 @@ lines nested beneath it."
 (defmjsface metascript-pretty-lambda-parameter-face metascript-builtin-face
   "Pretty lambda parameter face")
 
-(add-hook 'metascript-mode-hook
-          (lambda ()
-            (when metascript-pretty-symbol-display-enabled
-              (font-lock-add-keywords
-               nil
-               `(("\\_<\\(#->\\)\\_>"
-                  (0 (progn (compose-region (match-beginning 1)
-                                            (match-end 1)
-                                            "λ")
-                            'metascript-def-face)))
+(defun metascript-pretty-symbols-setup ()
+  "Setup the display of pretty symbols when `metascript-pretty-symbol-display-enabled' is true."
+  (when metascript-pretty-symbol-display-enabled
+    (font-lock-add-keywords
+     nil
+     `(("\\_<\\(#->\\)\\_>"
+	(0 (progn (compose-region (match-beginning 1)
+				  (match-end 1)
+				  "λ")
+		  'metascript-def-face)))
 
-                 ("\\_<\\(fun\\)\\_>"
-                  (0 (progn (compose-region (match-beginning 1)
-                                            (match-end 1)
-                                            "ƒ")
-                            'metascript-def-face)))
+       ("\\_<\\(fun\\)\\_>"
+	(0 (progn (compose-region (match-beginning 1)
+				  (match-end 1)
+				  "ƒ")
+		  'metascript-def-face)))
 
-                 ("\\_<\\(->\\)\\_>"
-                  (0 (progn (compose-region (match-beginning 1)
-                                            (match-end 1)
-                                            "→")
-                            'metascript-def-face)))
+       ("\\_<\\(->\\)\\_>"
+	(0 (progn (compose-region (match-beginning 1)
+				  (match-end 1)
+				  "→")
+		  'metascript-def-face)))
 
-                 ("\s\\(!=\\)\s"
-                  (0 (progn (compose-region (match-beginning 1)
-                                            (match-end 1)
-                                            "≠")
-                            nil)))
+       ("\s\\(!=\\)\s"
+	(0 (progn (compose-region (match-beginning 1)
+				  (match-end 1)
+				  "≠")
+		  nil)))
 
-                 ("\s\\(>=\\)\s"
-                  (0 (progn (compose-region (match-beginning 1)
-                                            (match-end 1)
-                                            "≥")
-                            nil)))
+       ("\s\\(>=\\)\s"
+	(0 (progn (compose-region (match-beginning 1)
+				  (match-end 1)
+				  "≥")
+		  nil)))
 
-                 ("\s\\(<=\\)\s"
-                  (0 (progn (compose-region (match-beginning 1)
-                                            (match-end 1)
-                                            "≤")
-                            nil)))
+       ("\s\\(<=\\)\s"
+	(0 (progn (compose-region (match-beginning 1)
+				  (match-end 1)
+				  "≤")
+		  nil)))
 
-                 ("\s\\(==\\)\s"
-                  (0 (progn (compose-region (match-beginning 1)
-                                            (match-end 1)
-                                            "≣")
-                            nil)))
+       ("\s\\(==\\)\s"
+	(0 (progn (compose-region (match-beginning 1)
+				  (match-end 1)
+				  "≣")
+		  nil)))
 
-                 ("\\_<\\(#it\\)\\_>"
-                  (0 (progn (compose-region (match-beginning 1)
-                                            (match-end 1)
-                                            metascript-pretty-lambda-parameter)
-                            metascript-pretty-lambda-parameter-face))))))))
+       ("\\_<\\(#it\\)\\_>"
+	(0 (progn (compose-region (match-beginning 1)
+				  (match-end 1)
+				  metascript-pretty-lambda-parameter)
+		  metascript-pretty-lambda-parameter-face)))))))
 
+(add-hook 'metascript-mode-hook #'metascript-pretty-symbols-setup)
 
 ;; REPL
 
@@ -495,7 +496,7 @@ lines nested beneath it."
 
 (define-derived-mode metascript-repl-connection-mode comint-mode "mjs repl connection"
   "Major mode for mjs repl connection"
-  (add-hook 'comint-output-filter-functions 'metascript-repl-connection-output nil t))
+  (add-hook 'comint-output-filter-functions #'metascript-repl-connection-output nil t))
 
 
 (defun metascript-chomp-end (string)
