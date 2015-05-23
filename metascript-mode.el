@@ -317,7 +317,7 @@ lines nested beneath it."
     map))
 
 ;;;###autoload
-(define-derived-mode metascript-mode fundamental-mode "MJS"
+(define-derived-mode metascript-mode prog-mode "MJS"
   "A major mode for editing Metascript source files."
   :syntax-table metascript-mode-syntax-table
   :group 'metascript
