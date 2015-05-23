@@ -37,7 +37,6 @@
 (require 'rx)
 (require 'flymake)
 (require 'comint)
-(require 'json)
 
 (defconst metascript-mode-version "0.1"
   "`metascript-mode' version number.")
@@ -266,6 +265,7 @@ lines nested beneath it."
 
 (defun metascript-package-json (package-root)
   "Read `package.json' from `PACKAGE-ROOT'."
+  (require 'json)
   (json-read-file (concat package-root "/package.json")))
 
 (defun metascript-buffer-package-json ()
