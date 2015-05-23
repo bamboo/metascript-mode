@@ -50,7 +50,7 @@
   :link '(emacs-commentary-link :tag "Commentary" "metascript-mode"))
 
 (defcustom metascript-indent-tabs-mode nil
-  "metascript-mode starts `indent-tabs-mode' with the value specified here, default is nil. "
+  "Custom value for `indent-tabs-mode' when `metascript-mode' starts, default is nil."
   :type 'boolean
   :group 'metascript)
 
@@ -265,18 +265,21 @@ lines nested beneath it."
   (locate-dominating-file (buffer-file-name) "package.json"))
 
 (defun metascript-package-json (package-root)
+  "Read `package.json' from `PACKAGE-ROOT'."
   (json-read-file (concat package-root "/package.json")))
 
 (defun metascript-buffer-package-json ()
+  "Return `package.json' content for current buffer package, if any."
   (let ((package-root (metascript-buffer-package-root)))
     (when package-root
       (metascript-package-json package-root))))
 
 (defun metascript-package-name (package-root)
-  "Returns the package name as defined in the package.json file at `package-root'."
+  "Return the package name as defined in the package.json file at `PACKAGE-ROOT'."
   (cdr (assoc 'name (metascript-package-json package-root))))
 
 (defun metascript-run-tests ()
+  "Run `npm test' on current package."
   (interactive)
   (let ((package (metascript-buffer-package-root)))
     (if package
@@ -352,7 +355,7 @@ lines nested beneath it."
             flymake-err-line-patterns))
 
 (defcustom metascript-implies-flymake t
-  "if metascript-mode should imply `flymake-mode', default is t. "
+  "Wether metascript-mode should imply `flymake-mode', default is t."
   :type 'boolean
   :group 'metascript)
 
@@ -381,13 +384,12 @@ lines nested beneath it."
 ; pretty symbol display
 
 (defcustom metascript-pretty-symbol-display-enabled t
-  "if metascript-mode should replace certain programming language symbols such
- as `fun' and `#->' by prettier ones such as `ƒ' and `𝝺', default is t."
+  "Wether metascript-mode should replace certain programming language symbols such as `fun' and `#->' by prettier ones such as `ƒ' and `𝝺', default is t."
   :type 'boolean
   :group 'metascript)
 
 (defcustom metascript-pretty-lambda-parameter "Χ"
-  "Pretty symbol for #it"
+  "Pretty symbol for #it."
   :type 'string
   :group 'metascript)
 
@@ -462,6 +464,7 @@ lines nested beneath it."
 
 ;;;###autoload
 (defun metascript-repl ()
+  "Launch or activate REPL."
   (interactive)
   (pop-to-buffer (metascript-repl-make-comint))
   (metascript-repl-mode))
@@ -471,6 +474,7 @@ lines nested beneath it."
                "--no-tty" "--port" (number-to-string inferior-metascript-repl-port)))
 
 (defun metascript-repl-eval (&optional process)
+  "Send active region to the REPL associated with `PROCESS'."
   (interactive)
   (let ((code (concat (metascript-chomp-end (metascript-region-string)) ";\n"))
         (repl (or process (metascript-repl-connection))))
@@ -492,7 +496,7 @@ lines nested beneath it."
 
 
 (defun metascript-chomp-end (string)
-  "Chomp trailing whitespace from `string'."
+  "Chomp trailing whitespace from `STRING'."
   (replace-regexp-in-string (rx (* (any " \t\n")) eos)
                             ""
                             string))
