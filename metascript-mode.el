@@ -1,4 +1,4 @@
-;;; metascript-mode.el --- Major mode for the Metascript programming language.
+;;; metascript-mode.el --- Major mode for the Metascript programming language
 
 ;; Copyright © 2014-2015 Rodrigo B. de Oliveira
 ;;
