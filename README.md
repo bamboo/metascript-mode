@@ -1,4 +1,4 @@
-## Metascript Mode [![Build Status](https://travis-ci.org/bamboo/metascript-mode.png?branch=master)](https://travis-ci.org/bamboo/metascript-mode)
+## Metascript Mode [![Build Status](https://travis-ci.org/bamboo/metascript-mode.svg?branch=master)](https://travis-ci.org/bamboo/metascript-mode) [![MELPA](http://melpa.org/packages/metascript-mode-badge.svg)](http://melpa.org/#/metascript-mode)
 
 A [Metascript](https://github.com/metascript/metascript) language mode for Emacs.
 
@@ -33,8 +33,10 @@ Usual [compilation-minor-mode](https://www.gnu.org/software/emacs/manual/html_no
 
 ## Installation
 
+Available from [MELPA](https://melpa.org).
+
 ```
-M-x package-install-file /path/to/metascript-mode.el
+M-x package-install <ENTER> metascript-mode
 ```
 
 ## Configuration
