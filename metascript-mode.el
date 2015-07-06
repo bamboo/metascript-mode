@@ -134,8 +134,9 @@
               symbol-end) . metascript-constant-face)
 
         (,(rx symbol-start (or "try" "catch" "finally" "throw"
-                               "loop" "next" "if" "else"
-                               "return" "do" "do!")
+			       "loop" "next!" "if" "else"
+			       "return" "do" "do!"
+			       "while" "yield")
               symbol-end) . metascript-control-flow-face)
 
         ;; functions
