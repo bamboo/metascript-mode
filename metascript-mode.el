@@ -136,7 +136,8 @@
         (,(rx symbol-start (or "try" "catch" "finally" "throw"
 			       "loop" "next!" "if" "else"
 			       "return" "do" "do!"
-			       "while" "yield")
+			       "while" (seq "yield" (1+ space) symbol-start "from" symbol-end)
+			       "yield")
               symbol-end) . metascript-control-flow-face)
 
         ;; functions
